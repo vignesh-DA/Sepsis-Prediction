@@ -1,0 +1,22 @@
+# Sepsis Prediction Project Configuration
+
+data:
+  raw_data_path: Sepsis_Data/raw
+  processed_data_path: Sepsis_Data/processed
+  external_data_path: Sepsis_Data/external
+
+model:
+  model_path: models/model.pkl
+  model_type: RandomForest  # Options: RandomForest, XGBoost, LogisticRegression
+  
+artifacts:
+  preprocessor_path: artifacts/preprocessor.pkl
+  scaler_path: artifacts/scaler.pkl
+
+training:
+  test_size: 0.2
+  random_state: 42
+  
+logging:
+  log_dir: logs
+  log_level: INFO
