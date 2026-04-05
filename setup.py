@@ -1,35 +1,39 @@
-'''
-The setup.py file is an essential part of packaging and distrbutive python projects.
-It is used by setup tools (or distutils in older python versions) to define the configuration
-of your project, such as its metadata, dependencies, and more  
-'''
-from setuptools import setup,find_packages
-from typing import List
+"""
+Project packaging configuration.
+"""
 
-requirement_lst:List[str]=[]
+from pathlib import Path
 
-def get_requirements()->List[str]:
-    '''
-    This function returns the requirements
-    '''
-    try:
-        with open('requirements.txt','r') as file:
-            # Read lines from the files
-            lines=file.readlines()
-            # process each line
-            for line in lines:
-                requirement=line.strip()
-                # ignore empty lines and -e .
-                if requirement and requirement!='-e .':
-                    requirement_lst.append(requirement)
-    except FileNotFoundError:
-        print("requirements.txt file not found")
-    return requirement_lst
+from setuptools import find_packages, setup
+
+
+BASE_DIR = Path(__file__).resolve().parent
+
+
+def get_requirements(file_name: str = "requirements.txt") -> list[str]:
+    """Return install requirements from a requirements file."""
+    requirements: list[str] = []
+    req_path = BASE_DIR / file_name
+
+    if not req_path.exists():
+        return requirements
+
+    for raw_line in req_path.read_text(encoding="utf-8").splitlines():
+        requirement = raw_line.strip()
+        # Ignore comments, empty lines and editable install marker.
+        if requirement and not requirement.startswith("#") and requirement != "-e .":
+            requirements.append(requirement)
+
+    return requirements
+
 
 setup(
-    name='Sepsis Prediction',
+    name="sepsis-prediction",
     version="0.0.1",
-    author='Gogula Vignesh',
+    author="Gogula Vignesh",
+    description="A machine learning pipeline for early sepsis prediction.",
     packages=find_packages(),
-    install_requires=get_requirements()
+    include_package_data=True,
+    install_requires=get_requirements(),
+    python_requires=">=3.9",
 )
